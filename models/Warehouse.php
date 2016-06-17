@@ -17,8 +17,11 @@ use yii\db\ActiveRecord;
  * @property string $address_zip
  * @property string $address_country
  *
- * @property Transfer[] $transfers
- * @property Transfer[] $transfers0
+ * @property Box[] $boxes
+ * @property TransferAccept[] $incomingTransferAccepts
+ * @property TransferAccept[] $outgoingTransferAccepts
+ * @property TransferRequest[] $incomingTransferRequests
+ * @property TransferRequest[] $outgoingtransferRequests
  */
 class Warehouse extends ActiveRecord
 {
@@ -62,16 +65,40 @@ class Warehouse extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getOutgoingTransfers()
+    public function getBoxes()
     {
-        return $this->hasMany(Transfer::className(), ['sender_id' => 'id']);
+        return $this->hasMany(Box::className(), ['dislocation_warehouse_id' => 'id']);
     }
 
     /**
      * @return ActiveQuery
      */
-    public function getIncomingTransfers()
+    public function getOutgoingTransferAccepts()
     {
-        return $this->hasMany(Transfer::className(), ['receiver_id' => 'id']);
+        return $this->hasMany(TransferAccept::className(), ['sender_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getOutgoingTransferRequests()
+    {
+        return $this->hasMany(TransferRequest::className(), ['sender_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getIncomingTransferAccepts()
+    {
+        return $this->hasMany(TransferAccept::className(), ['receiver_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getIncomingTransferRequests()
+    {
+        return $this->hasMany(TransferRequest::className(), ['receiver_id' => 'id']);
     }
 }

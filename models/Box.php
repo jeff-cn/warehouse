@@ -16,6 +16,7 @@ use yii\db\ActiveRecord;
  * @property double $length
  * @property integer $status
  *
+ * @property Warehouse $dislocationWarehouse
  * @property TransferItem[] $transferItems
  * @property TransferAccept[] $transferAccepts
  * @property TransferRequest[] $transferRequests
@@ -36,11 +37,33 @@ class Box extends ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'barcode', 'width', 'height', 'length', 'status'], 'required'],
-            [['id', 'status'], 'integer'],
-            [['barcode'], 'string'],
-            [['width', 'height', 'length'], 'number'],
-            [['barcode'], 'unique'],
+            [
+                ['id', 'barcode', 'width', 'height', 'length', 'status', 'dislocation_warehouse_id'],
+                'required'
+            ],
+            [
+                ['id', 'status', 'dislocation_warehouse_id'],
+                'integer'
+            ],
+            [
+                ['barcode'],
+                'string'
+            ],
+            [
+                ['width', 'height', 'length'],
+                'number'
+            ],
+            [
+                ['barcode'],
+                'unique'
+            ],
+            [
+                ['dislocation_warehouse_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => Warehouse::className(),
+                'targetAttribute' => ['dislocation_warehouse_id' => 'id']
+            ],
         ];
     }
 
@@ -56,7 +79,16 @@ class Box extends ActiveRecord
             'height' => 'Height',
             'length' => 'Length',
             'status' => 'Status',
+            'dislocation_warehouse_id' => 'Dislocation Warehouse ID',
         ];
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getDislocationWarehouse()
+    {
+        return $this->hasOne(Warehouse::className(), ['id' => 'dislocation_warehouse_id']);
     }
 
     /**
