@@ -17,6 +17,8 @@ use yii\db\ActiveRecord;
  * @property integer $status
  *
  * @property Warehouse $dislocationWarehouse
+ * @property DeliveryItem[] $deliveryItems
+ * @property DeliveryNote[] $deliveryNotes
  * @property TransferItem[] $transferItems
  * @property TransferAccept[] $transferAccepts
  * @property TransferRequest[] $transferRequests
@@ -89,6 +91,22 @@ class Box extends ActiveRecord
     public function getDislocationWarehouse()
     {
         return $this->hasOne(Warehouse::className(), ['id' => 'dislocation_warehouse_id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getDeliveryItems()
+    {
+        return $this->hasMany(DeliveryItem::className(), ['box_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getDeliveryNotes()
+    {
+        return $this->hasMany(DeliveryNote::className(), ['id' => 'delivery_note_id'])->viaTable('delivery_items', ['box_id' => 'id']);
     }
 
     /**
